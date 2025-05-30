@@ -57,10 +57,19 @@ def random_user():
     )
 
 @pytest.fixture
+def random_user2():
+    return RequestBodyUsuarios(
+        nome=f"usuario_{uuid.uuid4().hex[:6]}",
+        email=f"{uuid.uuid4().hex[:6]}@gmail.com",
+        password=uuid.uuid4().hex[:8],
+        administrador="false"
+    )
+
+@pytest.fixture
 def random_product():
     return RequestBodyProduto(
         nome=f"Produto_{uuid.uuid4().hex[:6]}",
-        preco=random.randint(10, 1000),
-        descricao=f"Descrição do produto {uuid.uuid4().hex[:6]}",
-        quantidade=random.randint(1, 100)
+        preco=random.randint(100, 1000),
+        descricao=f"Descrição do produto {uuid.uuid4().hex[:8]}",
+        quantidade=random.randint(100, 1000)
     )

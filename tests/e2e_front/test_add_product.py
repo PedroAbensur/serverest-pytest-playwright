@@ -12,7 +12,7 @@ def login_setup(page, ensure_admin_user):
     yield page
 
 
-def test_create_product(page, login_setup, random_product):
+def test_add_product(page, login_setup, random_product):
     cadastro_page = RegisterProductPage(page)
     cadastro_page.navigate()
 
@@ -22,3 +22,10 @@ def test_create_product(page, login_setup, random_product):
     page.wait_for_selector(f"text={random_product.nome}")
 
     assert page.locator(f"text={random_product.nome}").is_visible(), "Product is not present in Product Listing"
+
+    cadastro_page.navigate()
+    cadastro_page.fill_form(random_product)
+    cadastro_page.register()
+
+    page.wait_for_selector("text=Já existe produto com esse nome")
+    assert "Já existe produto com esse nome" in page.content()

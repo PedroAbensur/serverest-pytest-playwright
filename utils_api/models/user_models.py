@@ -12,3 +12,6 @@ class CadastroComSucesso(BaseModel):
 
 class ErrorEmailJaUtilizado(BaseModel):
     message: str
+
+class AlteradoComSucesso(BaseModel):
+    message: str

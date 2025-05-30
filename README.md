@@ -12,14 +12,14 @@
 ## Implemented Test Scenarios
 
 ### 🔹 Frontend (E2E) Tests
-1. User Registration and Login
-2. Admin User Create and Validate new Product
-3. User Adding Products to Shopping List
+1. User registration, logout, and login.
+2. Product creation and verification in the product listing.
+3. User Adding Product to Shopping List
 
 ### 🔹 API Tests
-1. User Registration and Login
-2. Admin User Create and Validate new Product
-3. Admin User Edit Existing User
+1. User creation and duplicate email validation test.
+2. Product creation and duplicate validation test with product listing verification.
+3. Update existing user test with response validation.
 
 
 ### Project Setup:

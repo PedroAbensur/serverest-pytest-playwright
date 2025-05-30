@@ -13,10 +13,12 @@ def test_register_login_with_random_user(page, random_user, ensure_admin_user):
     )
 
     page.wait_for_selector("text=Cadastro realizado com sucesso")
+    assert "Cadastro realizado com sucesso" in page.content(), "Error during registration"
 
     page.wait_for_selector(f"text=Bem vindo {random_user.nome}")
-    home_page = HomePage(page)
+    assert "Bem Vindo" in page.content(), "User is not in Home page"
 
+    home_page = HomePage(page)
     assert home_page.cadastrar_usuarios_button.is_visible(), "Home page not loaded after registration"
 
     page.wait_for_selector("text=Logout")
@@ -27,5 +29,4 @@ def test_register_login_with_random_user(page, random_user, ensure_admin_user):
     login_page.login(email=random_user.email, password=random_user.password)
 
     page.wait_for_selector(f"text=Bem Vindo {random_user.nome}")
-
-    assert "Bem Vindo" in page.content()
+    assert "Bem Vindo" in page.content(), "User is not in Home page"

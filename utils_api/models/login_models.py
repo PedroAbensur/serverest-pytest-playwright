@@ -10,6 +10,3 @@ class LoginComSucesso(BaseModel):
 
 class ErrorEmailSenhaInvalidos(BaseModel):
     message: str
-
-class errorEmailJaUtilizado(BaseModel):
-    message: str
