@@ -38,3 +38,6 @@ def test_edit_user(client, initial_setup, random_user2):
             pytest.skip("User already exists — test skipped.")
         except ValidationError as e:
             pytest.fail(f"Invalid existing email response format: {e}")
+
+    else:
+        pytest.fail(f"Unexpected error message for editing existing user: {edit_response.status_code} - {edit_response.text}")
