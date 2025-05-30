@@ -9,6 +9,7 @@ from utils_api.models.product_models import (
 from utils_api.models.user_models import CadastroComSucesso
 
 def test_create_product_api(client, ensure_admin_user, random_product):
+    # Test Step 1: Create a product via the API as Admin User, using the Admin Token
     response = client.post("/produtos", random_product.model_dump())
 
     if response.status_code == 201:
@@ -45,6 +46,7 @@ def test_create_product_api(client, ensure_admin_user, random_product):
     else:
         pytest.fail(f"Unexpected error when creating product: {response.status_code} - {response.text}")
 
+    # Test Step 2: Search for the recently created Product using the API
     response_get = client.get("/produtos")
     if response_get.status_code != 200:
         pytest.fail(f"Error fetching products: {response_get.status_code} - {response_get.text}")

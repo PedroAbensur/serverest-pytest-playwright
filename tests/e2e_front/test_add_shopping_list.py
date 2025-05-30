@@ -9,25 +9,26 @@ from page_objects.shopping_list_page import ShoppingListPage
 
 @pytest.fixture
 def initial_setup(page, ensure_admin_user, random_product, random_user):
+    # Initial Setup
+    # 1. Log into Admin Account
     login_page = LoginPage(page)
     login_page.navigate()
     login_page.login(email=ensure_admin_user.email, password=ensure_admin_user.password)
 
     page.wait_for_selector("text=Bem Vindo")
+
+    # 2. Register a Random Product
     cadastro_page = RegisterProductPage(page)
     cadastro_page.navigate()
 
     cadastro_page.fill_form(random_product)
     cadastro_page.register()
 
+    # 3. Check if product is registered correctly
     page.wait_for_selector(f"text={random_product.nome}")
-
     assert page.locator(f"text={random_product.nome}").is_visible(), "Product is not present in Product Listing"
 
-    cadastro_page.navigate()
-    cadastro_page.fill_form(random_product)
-    cadastro_page.register()
-
+    # 4. Logout from admin account and enter home page as buyer user
     cadastro_page.logout()
 
     register_page = RegisterPage(page)
@@ -49,15 +50,18 @@ def initial_setup(page, ensure_admin_user, random_product, random_user):
 
 
 def test_add_shopping_list(page, initial_setup, random_product, random_user):
+    # Test Step 1: Search product added in Initial Setup
     store_page = HomeStorePage(page)
 
     store_page.search_product(random_product.nome)
-    time.sleep(3)
+    time.sleep(5)
+
+    # Test Step 2: Add it to Shopping List
     store_page.add_to_shopping_by_exact_name(random_product.nome)
 
     page.wait_for_selector("text=Lista de Compras")
     assert "Lista de Compras" in page.content(), "User is not in shopping list"
 
+    # Test Step 3: Assert that product is present in Shopping List
     shopping_list = ShoppingListPage(page)
-
     assert shopping_list.get_total_product(random_product.nome) == 1, "Product not present in shopping list"

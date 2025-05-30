@@ -4,6 +4,8 @@ from utils_api.models.user_models import ErrorEmailJaUtilizado, CadastroComSuces
 
 @pytest.fixture
 def initial_setup(client, random_user):
+    # Initial Setup:
+    # 1. Create a random user
     create_response = client.post("/usuarios", random_user.model_dump())
 
     if create_response.status_code == 400:
@@ -15,6 +17,7 @@ def initial_setup(client, random_user):
     yield user_id
 
 def test_edit_user(client, initial_setup, random_user2):
+    # Test Step 1: Edit an existing user using the API and assert the possible responses
     edit_response = client.put(f"/usuarios/{initial_setup}", random_user2.model_dump())
 
     if edit_response.status_code == 200:

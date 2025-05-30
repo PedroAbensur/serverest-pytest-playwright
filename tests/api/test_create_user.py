@@ -3,6 +3,7 @@ from pydantic import ValidationError
 from utils_api.models.user_models import CadastroComSucesso, ErrorEmailJaUtilizado
 
 def test_create_user(client, random_user):
+    # Test Step 1: Register an user using the API
     response1 = client.post("/usuarios", random_user.model_dump())
 
     if response1.status_code == 201:
@@ -23,6 +24,7 @@ def test_create_user(client, random_user):
     else:
         pytest.fail(f"Unexpected error message creating user: {response1.status_code} - {response1.text}")
 
+    # Test Step 2: Try to register the same user from last step and assert it cannot be done
     response2 = client.post("/usuarios", random_user.model_dump())
 
     if response2.status_code != 400:
