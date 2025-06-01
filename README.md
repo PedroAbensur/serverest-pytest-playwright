@@ -106,7 +106,7 @@ pip install -r requirements.txt
 
 playwright install
 
-playwright install-deps chromium
+playwright install-deps chromium # May require sudo!
 ```
 
 ### Run all tests
