@@ -5,6 +5,7 @@ from page_objects.register_product import RegisterProductPage
 from page_objects.login_page import LoginPage
 from page_objects.home_store_page import HomeStorePage
 from page_objects.shopping_list_page import ShoppingListPage
+from playwright.sync_api import sync_playwright, TimeoutError
 
 
 @pytest.fixture
@@ -15,7 +16,10 @@ def initial_setup(page, ensure_admin_user, random_product, random_user):
     login_page.navigate()
     login_page.login(email=ensure_admin_user.email, password=ensure_admin_user.password)
 
-    page.wait_for_selector("text=Bem Vindo")
+    try:
+        page.wait_for_selector("text=Bem Vindo")
+    except TimeoutError:
+        pytest.fail("Initial Setup: Login to admin account failed")
 
     # 2. Register a Random Product
     cadastro_page = RegisterProductPage(page)
@@ -25,12 +29,21 @@ def initial_setup(page, ensure_admin_user, random_product, random_user):
     cadastro_page.register()
 
     # 3. Check if product is registered correctly
-    page.wait_for_selector(f"text={random_product.nome}")
+    try:
+        page.wait_for_selector(f"text={random_product.nome}")
+    except TimeoutError:
+        pytest.fail("Initial Setup: Product is not present in Product Listing")
+
     assert page.locator(f"text={random_product.nome}").is_visible(), "Product is not present in Product Listing"
 
     # 4. Logout from admin account and enter home page as buyer user
     cadastro_page.logout()
 
+    yield random_product
+
+
+def test_add_shopping_list(page, initial_setup, random_product, random_user):
+    # Test Step 1: Register and log in as new user
     register_page = RegisterPage(page)
     register_page.navigate()
     register_page.register(
@@ -40,28 +53,31 @@ def initial_setup(page, ensure_admin_user, random_product, random_user):
         is_admin=False
     )
 
-    page.wait_for_selector("text=Cadastro realizado com sucesso")
-    assert "Cadastro realizado com sucesso" in page.content(), "Error during registration"
+    try:
+        page.wait_for_selector("text=Cadastro realizado com sucesso")
+    except TimeoutError:
+        pytest.fail("Error during registration")
 
-    page.wait_for_selector("text=Serverest Store")
-    assert "Serverest Store" in page.content(), "User is not in Home page"
+    try:
+        page.wait_for_selector("text=Serverest Store")
+    except TimeoutError:
+        pytest.fail("User is not in Home page")
 
-    yield random_product
-
-
-def test_add_shopping_list(page, initial_setup, random_product, random_user):
-    # Test Step 1: Search product added in Initial Setup
+    # Test Step 2: Search product added in Initial Setup
     store_page = HomeStorePage(page)
 
     store_page.search_product(random_product.nome)
     time.sleep(5)
 
-    # Test Step 2: Add it to Shopping List
+    # Test Step 3: Add it to Shopping List
     store_page.add_to_shopping_by_exact_name(random_product.nome)
+    time.sleep(4)
 
-    page.wait_for_selector("text=Lista de Compras")
-    assert "Lista de Compras" in page.content(), "User is not in shopping list"
+    try:
+        page.wait_for_selector("text=Lista de Compras")
+    except TimeoutError:
+        pytest.fail("User is not in shopping list")
 
-    # Test Step 3: Assert that product is present in Shopping List
+    # Test Step 4: Assert that product is present in Shopping List
     shopping_list = ShoppingListPage(page)
     assert shopping_list.get_total_product(random_product.nome) == 1, "Product not present in shopping list"

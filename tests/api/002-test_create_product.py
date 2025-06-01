@@ -46,7 +46,7 @@ def test_create_product_api(client, ensure_admin_user, random_product):
     else:
         pytest.fail(f"Unexpected error when creating product: {response.status_code} - {response.text}")
 
-    # Test Step 2: Search for the recently created Product using the API
+    # Test Step 2: Get the Products array using the API
     response_get = client.get("/produtos")
     if response_get.status_code != 200:
         pytest.fail(f"Error fetching products: {response_get.status_code} - {response_get.text}")
@@ -59,7 +59,11 @@ def test_create_product_api(client, ensure_admin_user, random_product):
     except Exception as e:
         pytest.fail(f"Unexpected error processing products: {e}")
 
-    match = next(
-        (p for p in produtos if p.nome == random_product.nome and p.descricao == random_product.descricao), None)
- 
+    # Test Step 3: Search and assert the product is present in products array got from API
+    match = None
+    for p in produtos:
+        if p.nome == random_product.nome and p.descricao == random_product.descricao:
+            match = p
+            break
+
     assert match is not None, "Product not found in listing"

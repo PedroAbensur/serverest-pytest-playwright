@@ -24,7 +24,7 @@ def test_create_user(client, random_user):
     else:
         pytest.fail(f"Unexpected error message creating user: {response1.status_code} - {response1.text}")
 
-    # Test Step 2: Try to register the same user from last step and assert it cannot be done
+    # Test Step 2: Try to register the same user from Step 1 and assert it cannot be done
     response2 = client.post("/usuarios", random_user.model_dump())
 
     if response2.status_code != 400:
