@@ -1,8 +1,8 @@
 # Automated Testing Project with Python, Pytest, and Playwright for [Serverest](https://serverest.dev) application.
 
 - **Python** – Programming language
-- **Pytest** – Test framework
-- **Playwright (Python)** – E2E UI automation
+- **Pytest** – Test framework for writing and running test cases
+- **Playwright (Python)** – Test framework for E2E UI automation
 - **HTTPX** – HTTP client for API testing
 - **Pydantic** – Data validation and parsing for models
 - **Page Object Model (POM)** – Design pattern for UI automation
